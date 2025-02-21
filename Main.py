@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template_string
 import google.generativeai as genai
 import threading
 import requests
@@ -41,6 +41,17 @@ def generate():
 
     response = chat_session.send_message(user_input)
     return jsonify({"response": response.text})
+
+# מסלול API חדש לקבלת קלט מ-URL
+@app.route('/get_now')
+def get_now():
+    user_input = request.args.get("Hello", "") # מקבל את הערך של הפרמטר 'Hello' מה-URL
+
+    if not user_input:
+        return "Please provide input in the 'Hello' parameter (e.g., /get_now?Hello=your_message)"
+
+    response = chat_session.send_message(user_input)
+    return render_template_string(f"<h1>Gemini Response:</h1><p>{response.text}</p>")
 
 # פונקציה ששולחת פינג לשרת כל כמה דקות כדי לשמור עליו דלוק
 def keep_alive():
