@@ -49,7 +49,7 @@ def keep_alive():
     time.sleep(300)  # 300 שניות = 5 דקות
     print("Starting keep-alive pings.")
 
-    url = "YOUR_RAILWAY_URL_HERE"  # **חשוב:** החלף את זה בכתובת ה-URL האמיתית של הפרויקט שלך!
+    url = "https://web-production-d4e5.up.railway.app/"  # **חשוב:** החלף את זה בכתובת ה-URL האמיתית של הפרויקט שלך!
     if not url:
         print("⚠️  לא הוגדר URL לפינג.  ודא שאתה מחליף את YOUR_RAILWAY_URL_HERE בכתובת האמיתית.")
         return
