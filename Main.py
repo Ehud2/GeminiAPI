@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 import google.generativeai as genai
-import os
 import threading
 import requests
 import time
@@ -12,7 +11,7 @@ app = Flask(__name__)
 def home():
     return "Gemini API"
 
-# קביעת מפתח API של Gemini מהסביבה
+# קביעת מפתח API של Gemini  - עכשיו ישירות בקוד!
 genai.configure(api_key="AIzaSyBGYX_wBVWHSHF-id-4uQnqChm9hIE0z-I")
 
 # הגדרת מודל
@@ -45,9 +44,14 @@ def generate():
 
 # פונקציה ששולחת פינג לשרת כל כמה דקות כדי לשמור עליו דלוק
 def keep_alive():
-    url = os.environ.get("RAILWAY_URL")  # כתובת האתר של הפרויקט
+    # מחכה 5 דקות לפני שמתחיל לשלוח פינגים
+    print("Waiting 5 minutes before starting keep-alive pings...")
+    time.sleep(300)  # 300 שניות = 5 דקות
+    print("Starting keep-alive pings.")
+
+    url = "YOUR_RAILWAY_URL_HERE"  # **חשוב:** החלף את זה בכתובת ה-URL האמיתית של הפרויקט שלך!
     if not url:
-        print("⚠️ לא נמצא משתנה RAILWAY_URL בסביבה!")
+        print("⚠️  לא הוגדר URL לפינג.  ודא שאתה מחליף את YOUR_RAILWAY_URL_HERE בכתובת האמיתית.")
         return
 
     while True:
