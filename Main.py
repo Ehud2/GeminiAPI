@@ -13,7 +13,7 @@ def home():
     return "Gemini API"
 
 # קביעת מפתח API של Gemini מהסביבה
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+genai.configure(api_key="AIzaSyBGYX_wBVWHSHF-id-4uQnqChm9hIE0z-I")
 
 # הגדרת מודל
 generation_config = {
