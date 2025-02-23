@@ -14,10 +14,8 @@ def home():
 # קביעת מפתח API של Gemini  - עכשיו ישירות בקוד!
 genai.configure(api_key="AIzaSyDUdcllIkENNJFbE88YCBhf2PdOWkKTmEA")
 
-
-
 system_instruction = """
-אתה בינה מלאכותית, אתה חלק מהפלאגין "RSIL AI" של "רובלוקס סטודיו ישראל", אתה אומנת על ידי "רובלוקס סטודיו ישראל" ולא על ידי אף חברה אחרת, אתה מודל בשם "RSIL AI 3", המטרה שלך היא לקבל בקשות משחקנים ולבצע מה שהם רוצים, במשחק שלהם.
+אתה בינה מלאכותית, אתה חלק מהפלאגין "RSIL AI" של "רובלוקס סטודיו ישראל", אתה אומנת על ידי "רובלוקס סטודיו ישראל", אתה מודל בשם "RSIL AI 3", המטרה שלך היא לקבל בקשות משחקנים ולבצע מה שהם רוצים, במשחק שלהם.
 
 כל פעם שאתה תקבל בקשה משחקן, באופן אוטומטי אתה תקבל את הפרטים הבאים:
 - הפרטים של המשתמש ששלח את הבקשה
@@ -62,13 +60,20 @@ generation_config = {
     "response_mime_type": "text/plain",
 }
 
-model = genai.GenerativeModel(
-    model_name="gemini-2.0-flash",
-    generation_config=generation_config,
-    system_instruction=system_instruction
-)
+# מילון לשמירת chat sessions לפי מזהה משתמש
+chat_sessions = {}
 
-chat_session = model.start_chat(history=[])
+def get_chat_session(user_id):
+    global chat_sessions # הוספתי כדי לאפשר גישה למשתנה הגלובלי
+    if user_id not in chat_sessions:
+         # הגדרת מודל
+        model = genai.GenerativeModel(
+            model_name="gemini-2.0-flash",
+            generation_config=generation_config,
+            system_instruction=system_instruction
+        )
+        chat_sessions[user_id] = model.start_chat(history=[])
+    return chat_sessions[user_id]
 
 def remove_code_delimiters(text):
     lines = text.splitlines()
@@ -79,23 +84,48 @@ def remove_code_delimiters(text):
 @app.route('/generate', methods=['POST'])
 def generate():
     data = request.get_json()
+    user_id = data.get("userId")
     user_input = data.get("input", "")
+
+    if not user_id:
+        return jsonify({"error": "Missing user ID"}), 400
 
     if not user_input:
         return jsonify({"error": "Missing input"}), 400
 
+    chat_session = get_chat_session(user_id)
     response = chat_session.send_message(user_input)
     modified_response = remove_code_delimiters(response.text)
     return jsonify({"response": modified_response})
+
+# מסלול API למחיקת chat session
+@app.route('/clear_chat', methods=['POST'])
+def clear_chat():
+    data = request.get_json()
+    user_id = data.get("userId")
+
+    if not user_id:
+        return jsonify({"error": "Missing user ID"}), 400
+
+    if user_id in chat_sessions:
+        del chat_sessions[user_id]
+        return jsonify({"message": f"Chat session for user {user_id} cleared."})
+    else:
+        return jsonify({"message": f"No chat session found for user {user_id}."})
 
 # מסלול API חדש לקבלת קלט מ-URL
 @app.route('/get_now')
 def get_now():
     user_input = request.args.get("Hello", "") # מקבל את הערך של הפרמטר 'Hello' מה-URL
+    user_id = request.args.get("userId", "")
 
     if not user_input:
         return "Please provide input in the 'Hello' parameter (e.g., /get_now?Hello=your_message)"
 
+    if not user_id:
+        return "Please provide the user ID in the 'userId' parameter (e.g., /get_now?Hello=your_message&userId=123)"
+
+    chat_session = get_chat_session(user_id)
     response = chat_session.send_message(user_input)
     modified_response = remove_code_delimiters(response.text)
     return render_template_string(f"<h1>Gemini Response:</h1><p>{modified_response}</p>")
