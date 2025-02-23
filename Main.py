@@ -19,7 +19,7 @@ genai.configure(api_key="AIzaSyDUdcllIkENNJFbE88YCBhf2PdOWkKTmEA")
 system_instruction = """
 אתה בינה מלאכותית, אתה חלק מהפלאגין "RSIL AI" של "רובלוקס סטודיו ישראל", אתה אומנת על ידי "רובלוקס סטודיו ישראל" ולא על ידי אף חברה אחרת, אתה מודל בשם "RSIL AI 3", המטרה שלך היא לקבל בקשות משחקנים ולבצע מה שהם רוצים, במשחק שלהם.
 
-כל פעם שאתה תקבל בקשה משחקן, באופן אוטומתי אתה תקבל את הפרטים הבאים:
+כל פעם שאתה תקבל בקשה משחקן, באופן אוטומטי אתה תקבל את הפרטים הבאים:
 - הפרטים של המשתמש ששלח את הבקשה
 - פרטים על המשחק שהוא נמצא בו ברובלוקס סטודיו
 - האובייקט (Instance) שהוא כרגע מסמן בExplorer של הרובלוקס סטודיו
@@ -31,6 +31,16 @@ system_instruction = """
 חשוב מאוד: במידה והשחקן מבקש ממך בקשה שמצריכה ממך מידע על אובייקט מסויים, אתה תגיד לו שהוא חייב לסמן בExplorer את אותו אובייקט, למשל אם מבקשים ממך "כמה Parts יש בתיקייה הזאתי?" אבל לא קיבלת מידע על שום תיקייה, זה אומר שהשחקן לא מסמן את התיקייה בExplorer, אז אתה תגיד לו מה הוא צריך לעשות.
 
 במידה והשחקן שואל אותך שאלה שלא מצריכה לסמן משהו בExplorer כי אתה לא צריך פרטים על אובייקטים במשחק כדי לענות עליה, אתה פשוט תענה לו על השאלה, אותו דבר לאם השחקן שואל אותך שאלה ובכל מקרה הוא סימן משהו בExplorer וקיבלת פרטים שלא קשורים לשאלה שלו, אתה עדיין תענה לךו על השאלה.
+
+
+יש לך את היכולת להריץ קודים ברובלוקס סטודיו כדי לבצע בקשות שהשחקן רצה שתבצע, למשל אם השחקן אמר לך "תיצור part" אז אתה תיצור את הקוד:
+local Part = instance.new("Part")
+Part.Parent = game.Workspace
+
+וזה נכון ככה לכל דבר, גם אם תרצה ליצור Script בשביל השחקן אז אתה תיצור Script ותגדיר לו את הSource שתרצה.
+שים לב וזה חשוב מאוד מאוד:
+כשאתה יוצר סקריפט אתה חייב להגיד "Code To Run:" ומיתחת לזה את הקוד שיצרת, אתה יכול להריץ קוד אחד כל פעם, שים לב שה"Code To Run" וכל הסקריפט שיצרת שבשורה מיתחת לזה חייבים להיות בסוף המענה שלך, כי הפלאגין בודק את התשובה שלך ובודק אם קיים הבמשפט "Code To Run" ואם כן הוא מחשיב את השורה אחרי המשפט הזה ועד השורה האחרונה של התשובה שלך כקוד שצריך להריץ, אם אתה רוצה לענות למשתמש לדוגמה "בטח, יצרתי את הpart בשבילך" אז אתה קודם תכתוב את זה ולמטה את הקוד.
+
 """
 
 # הגדרת מודל
@@ -50,6 +60,11 @@ model = genai.GenerativeModel(
 
 chat_session = model.start_chat(history=[])
 
+def remove_code_delimiters(text):
+    lines = text.splitlines()
+    filtered_lines = [line for line in lines if line.strip() != "```" and line.strip() != "```lua"]
+    return "\n".join(filtered_lines)
+
 # מסלול API לשליחת הודעה ל-Gemini
 @app.route('/generate', methods=['POST'])
 def generate():
@@ -60,7 +75,8 @@ def generate():
         return jsonify({"error": "Missing input"}), 400
 
     response = chat_session.send_message(user_input)
-    return jsonify({"response": response.text})
+    modified_response = remove_code_delimiters(response.text)
+    return jsonify({"response": modified_response})
 
 # מסלול API חדש לקבלת קלט מ-URL
 @app.route('/get_now')
@@ -71,7 +87,8 @@ def get_now():
         return "Please provide input in the 'Hello' parameter (e.g., /get_now?Hello=your_message)"
 
     response = chat_session.send_message(user_input)
-    return render_template_string(f"<h1>Gemini Response:</h1><p>{response.text}</p>")
+    modified_response = remove_code_delimiters(response.text)
+    return render_template_string(f"<h1>Gemini Response:</h1><p>{modified_response}</p>")
 
 # פונקציה ששולחת פינג לשרת כל כמה דקות כדי לשמור עליו דלוק
 def keep_alive():
