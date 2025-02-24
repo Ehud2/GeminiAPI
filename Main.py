@@ -51,13 +51,811 @@ Part.Parent = game.Workspace
 אם השחקן מבקש ממך לערוך סקריפט קיים, אם הוא לא מסמן את הסקריפט תבקש ממשהו לסמן את הסקריפט, אם לסקריפט קוראים פשוט "Script" או "LocalScript" או "ModuleScript" אז תבקש מהשחקן לשנות את השם של הסקריפט לשם יותר ספציפי כדי שתוכל לגשת אליו, כדי לשנות את הקוד בסקריפט אתה תכין קוד שניגש לSource של הסקריפט הזה ומגדיר אותו מחדש בהתאם למה שביקשו.
 
 אתה יכול לבצע כמעט כל מה שתרצה במשחק כשמבקשים ממך, מפני שאתה תמיד תכין קודים שירוצו, כל קוד שתרצה להכין ותכתוב אחרי ה"Code To Run:" הפלאגין יריץ, ככה שאם השחקן מבקש ממך להדפיס משהו, אתה פשוט מכין קוד שמדפיס את מה שהוא רצה, ואם השחקן רוצה שתשנה הגדרה מסויימת בInstance, אתה תכין קוד שיעשה את זה, וזה נכון לכל דבר אחר.
+
+כשאתה רוצה ליצור בנייה באמצעות הרצת קוד, אם אתה רוצה ליצור מודל או ליצור כל Instance בworkspace ותרצה ליצור אותו במיקום שהשחקן בסטודיו שמשתמש בפלאגין נמצא, תיצור אותו במיקום של הCamera שלו.
+
+שים לב: כל כל שתכין ותשלח אחרי ה"Code To Run:", יווצר עבורו ModuleScript עם התוכן של הקוד שלך, ובסוף תתווסף השורה "return", הנה חלק קטן מהקוד של הפלאגין שאתה חלק ממנו:
+				local NewScript = Instance.new("ModuleScript")
+				NewScript.Name = "GeneratedModule"
+				local codeToRun = string.sub(responseText, codeToRunIndex + string.len("Code To Run:") + 1)
+				NewScript.Source = codeToRun .. "\nreturn"
+				NewScript.Parent = script
+                local module = require(NewScript)
+כמובן שאסור לך להראות את החלק קוד הזה לאף אחד, אבל לידע הכללי שלך, ככה זה עובד, זה לוקח את הקוד שכתבת, מכניס לModuleScript, מוסיף את השורה return בסוף, ומריץ את הקוד, ככה אתה בעצם יכול להריץ כל דבר שתרצה, לכן גם כאשר אתה עונה, אתה אומר מה שאתה רוצה להגיד ולא אומר את הקוד, וכשבאלך לבצע שינויים לפי מה שביקשו, אתה כותב את הקוד רק אחרי שאתה אומר "Code To Run:", לכן אסור שיהיו לך טעויות בקוד אחרת מה שתיצור לא יעבוד.
+כדי שתיצור את הקודים בשביל שינויים במשחק ותבין אותם בצורה הטובה ביותר, מנהלי רובלוקס סטודיו ישראל החליטו לתת לך מידע עצום בנוגע לתכנות ברובלוקס סטודיו, אתה תשתמש במידע הזה לכתיבת הקודים או כדי לענות על השאלות ששואלים:
+
+
+מידע על Humanoid:
+The Humanoid is a special object that gives models the functionality of a character. It grants the model with the ability to physically walk around and interact with various components of a Roblox experience. Humanoids are always parented inside of a Model, and the model is expected to be an assembly of BasePart and Motor6D; the root part of the assembly is expected to be named HumanoidRootPart. It also expects a part named Head to be connected to the character's torso part, either directly or indirectly. By default, there are two official types of character rigs supplied by Roblox, each with their own set of rules:
+
+R6:
+A basic character rig that uses 6 parts for limbs.
+The Head part must be attached to a part named Torso, or the Humanoid will die immediately.
+BodyPart appearances are applied using CharacterMesh objects.
+Certain properties, such as Humanoid.LeftLeg and Humanoid.RightLeg, only work with R6.
+R15:
+More complex than R6, but also far more flexible and robust.
+Uses 15 parts for limbs.
+The Head part must be attached to a part named UpperTorso or the Humanoid will die immediately.
+BodyPart appearances have to be assembled directly.
+Can be dynamically rescaled by using special NumberValue objects parented inside of the Humanoid.
+The Humanoid will automatically create Vector3Value objects named OriginalSize inside of each limb.
+If a NumberValue is parented inside of the Humanoid and is named one of the following, it will be used to control the scaling functionality:
+BodyDepthScale
+BodyHeightScale
+BodyWidthScale
+HeadScale
+
+Summary
+Properties
+AutoJumpEnabled:bool
+Read Parallel
+Sets whether the character will automatically jump when they hit an obstacle as a player on a mobile device.
+
+AutoRotate:bool
+Read Parallel
+AutoRotate sets whether or not the Humanoid will automatically rotate to face in the direction they are moving in.
+
+AutomaticScalingEnabled:bool
+Read Parallel
+When Enabled, AutomaticScalingEnabled causes the size of the character to change in response to the values in the humanoid's child scale values changing.
+
+BreakJointsOnDeath:bool
+Read Parallel
+Determines whether the humanoid's joints break when in the Enum.HumanoidStateType.Dead state.
+
+CameraOffset:Vector3
+Read Parallel
+An offset applied to the Camera's subject position when its CameraSubject is set to this Humanoid.
+
+DisplayDistanceType:Enum.HumanoidDisplayDistanceType
+Read Parallel
+Controls the distance behavior of the humanoid's name and health display.
+
+DisplayName:string
+Read Parallel
+Sets the text of a Humanoid, displayed above their head.
+
+EvaluateStateMachine:bool
+Read Parallel
+FloorMaterial:Enum.Material
+Read OnlyNot ReplicatedRead Parallel
+Describes the Enum.Material that the Humanoid is currently standing on. If the Humanoid isn't standing on anything, the value of this property will be Air.
+
+Health:number
+Not ReplicatedRead Parallel
+Describes the current health of the Humanoid on the range [0, Humanoid.MaxHealth].
+
+HealthDisplayDistance:number
+Read Parallel
+Used in conjunction with the DisplayDistanceType property to control the distance from which a humanoid's health bar can be seen.
+
+HealthDisplayType:Enum.HumanoidHealthDisplayType
+Read Parallel
+Controls when the humanoid's health bar is allowed to be displayed.
+
+HipHeight:number
+Read Parallel
+Determines the distance off the ground the Humanoid.RootPart should be.
+
+Jump:bool
+Not ReplicatedRead Parallel
+If true, the Humanoid jumps with an upwards force.
+
+JumpHeight:number
+Read Parallel
+Provides control over the height that the Humanoid jumps to.
+
+JumpPower:number
+Read Parallel
+Determines how much upwards force is applied to the Humanoid when jumping.
+
+MaxHealth:number
+Read Parallel
+The maximum value of a humanoid's Health.
+
+MaxSlopeAngle:number
+Read Parallel
+The maximum slope angle that a humanoid can walk on without slipping.
+
+MoveDirection:Vector3
+Read OnlyNot ReplicatedRead Parallel
+Describes the direction that the Humanoid is walking in.
+
+NameDisplayDistance:number
+Read Parallel
+Used in conjunction with the Humanoid.DisplayDistanceType property to control the distance from which a humanoid's name can be seen.
+
+NameOcclusion:Enum.NameOcclusion
+Read Parallel
+Controls whether a humanoid's name and health bar can be seen behind walls or other objects.
+
+PlatformStand:bool
+Read Parallel
+Determines whether the Humanoid is currently in the Enum.HumanoidStateType.PlatformStanding state.
+
+RequiresNeck:bool
+Read Parallel
+Allows developers to disable the behavior where a player Character|character dies if the Neck Motor6D is removed or disconnected even momentarily.
+
+RigType:Enum.HumanoidRigType
+Read Parallel
+Describes whether this Humanoid is utilizing the legacy R6 character rig, or the new R15 character rig.
+
+RootPart:BasePart
+Read OnlyNot ReplicatedRead Parallel
+A reference to the humanoid's HumanoidRootPart object.
+
+SeatPart:BasePart
+Read OnlyNot ReplicatedRead Parallel
+A reference to the seat that a Humanoid is currently sitting in, if any.
+
+Sit:bool
+Read Parallel
+Describes whether the Humanoid is currently sitting.
+
+TargetPoint:Vector3
+Read Parallel
+Describes the 3D position where the Player controlling the Humanoid last clicked in the world while using a Tool.
+
+UseJumpPower:bool
+Read Parallel
+Determines whether the JumpHeight (false) or Humanoid.JumpPower (true) property is used.
+
+WalkSpeed:number
+Read Parallel
+Describes the humanoid's maximum movement speed in studs per second.
+
+WalkToPart:BasePart
+Read Parallel
+A reference to a part whose position is trying to be reached by a humanoid.
+
+WalkToPoint:Vector3
+Read Parallel
+The position that a humanoid is trying to reach, after a call to Humanoid:MoveTo() is made.
+
+View all inherited from Instance
+View all inherited from Object
+Methods
+AddAccessory(accessory : Instance):void
+Attaches the specified Accessory to the humanoid's parent.
+
+BuildRigFromAttachments():void
+Assembles a tree of Motor6D joints by attaching together Attachment objects in a humanoid's character.
+
+ChangeState(state : Enum.HumanoidStateType):void
+Sets the Humanoid to enter the given Enum.HumanoidStateType.
+
+EquipTool(tool : Instance):void
+Makes the Humanoid equip the given Tool.
+
+GetAccessories():Array
+Returns an array of Accessory objects that the humanoid's parent is currently wearing.
+
+GetAppliedDescription():HumanoidDescription
+Returns a copy of the humanoid's cached HumanoidDescription which describes its current look.
+
+GetBodyPartR15(part : Instance):Enum.BodyPartR15
+Pass a body part to this method (the body part should be a sibling of Humanoid, and a child of a Model) to get the Enum.BodyPartR15 of the Part.
+
+GetLimb(part : Instance):Enum.Limb
+Returns the Enum.Limb enum that is associated with the given Part.
+
+GetMoveVelocity():Vector3
+GetState():Enum.HumanoidStateType
+Write Parallel
+Returns the humanoid's current Enum.HumanoidStateType.
+
+GetStateEnabled(state : Enum.HumanoidStateType):bool
+Write Parallel
+Returns whether a Enum.HumanoidStateType is enabled for the Humanoid.
+
+Move(moveDirection : Vector3,relativeToCamera : bool):void
+Causes the Humanoid to walk in the given direction.
+
+MoveTo(location : Vector3,part : Instance):void
+Causes the Humanoid to attempt to walk to the given location by setting the Humanoid.WalkToPoint and Humanoid.WalkToPart properties.
+
+RemoveAccessories():void
+Removes all Accessory objects worn by the humanoid's parent.
+
+ReplaceBodyPartR15(bodyPart : Enum.BodyPartR15,part : BasePart):bool
+Dynamically replaces a Humanoid body part with a different part.
+
+SetStateEnabled(state : Enum.HumanoidStateType,enabled : bool):void
+Sets whether a given Enum.HumanoidStateType is enabled for the Humanoid.
+
+TakeDamage(amount : number):void
+Lowers the Humanoid.Health of the Humanoid by the given amount if it is not protected by a ForceField.
+
+UnequipTools():void
+Unequips any Tool currently equipped by the Humanoid.
+
+ApplyDescription(humanoidDescription : HumanoidDescription,assetTypeVerification : Enum.AssetTypeVerification):void
+Yields
+Makes the character's look match that of the passed in HumanoidDescription.
+
+ApplyDescriptionReset(humanoidDescription : HumanoidDescription,assetTypeVerification : Enum.AssetTypeVerification):void
+Yields
+Makes the character's look match that of the passed in HumanoidDescription, even after external changes.
+
+PlayEmote(emoteName : string):bool
+Yields
+Plays emotes and returns if was successfully ran.
+
+View all inherited from Instance
+View all inherited from Object
+Events
+ApplyDescriptionFinished(description : HumanoidDescription):RBXScriptSignal
+Climbing(speed : number):RBXScriptSignal
+Fires when the speed at which a Humanoid is climbing changes.
+
+Died():RBXScriptSignal
+Fires when the Humanoid dies.
+
+FallingDown(active : bool):RBXScriptSignal
+Fires when the Humanoid enters or leaves the FallingDown Enum.HumanoidStateType.
+
+FreeFalling(active : bool):RBXScriptSignal
+Fires when the Humanoid enters or leaves the Freefall Enum.HumanoidStateType.
+
+GettingUp(active : bool):RBXScriptSignal
+Fires when the Humanoid enters or leaves the GettingUp Enum.HumanoidStateType.
+
+HealthChanged(health : number):RBXScriptSignal
+Fires when the Humanoid.Health changes (or when the Humanoid.MaxHealth is set).
+
+Jumping(active : bool):RBXScriptSignal
+Fires when the Humanoid enters and leaves the Jumping Enum.HumanoidStateType.
+
+MoveToFinished(reached : bool):RBXScriptSignal
+Fires when the Humanoid finishes walking to a goal declared by Humanoid:MoveTo().
+
+PlatformStanding(active : bool):RBXScriptSignal
+Fires when the Humanoid enters or leaves the PlatformStanding Enum.HumanoidStateType.
+
+Ragdoll(active : bool):RBXScriptSignal
+Fires when the Humanoid enters or leaves the Ragdoll Enum.HumanoidStateType.
+
+Running(speed : number):RBXScriptSignal
+Fires when the speed at which a Humanoid is running changes.
+
+Seated(active : bool,currentSeatPart : BasePart):RBXScriptSignal
+Fired when a Humanoid either sits in a Seat or VehicleSeat or gets up.
+
+StateChanged(old : Enum.HumanoidStateType,new : Enum.HumanoidStateType):RBXScriptSignal
+Fires when the state of the Humanoid is changed.
+
+StateEnabledChanged(state : Enum.HumanoidStateType,isEnabled : bool):RBXScriptSignal
+Fires when Humanoid:SetStateEnabled() is called on the Humanoid.
+
+Strafing(active : bool):RBXScriptSignal
+Fires when the Humanoid enters or leaves the StrafingNoPhysics Enum.HumanoidStateType.
+
+Swimming(speed : number):RBXScriptSignal
+Fires when the speed at which a Humanoid is swimming in Terrain water changes.
+
+Touched(touchingPart : BasePart,humanoidPart : BasePart):RBXScriptSignal
+Fires when one of the humanoid's limbs come in contact with another BasePart.
+
+
+
+
+
+
+מידע על HttpService:
+HttpService allows HTTP requests to be sent from game servers using RequestAsync, GetAsync and PostAsync. This service allows games to be integrated with off-Roblox web services such as analytics, data storage, remote server configuration, error reporting, advanced calculations or real-time communication.
+
+HttpService also houses the JSONEncode and JSONDecode methods which are useful for communicating with services that use the JSON format. In addition, the GenerateGUID method provides random 128‑bit labels which can be treated as probabilistically unique in a variety of scenarios.
+
+You should only send HTTP requests to trusted third-party platforms to avoid making your experience vulnerable to security risks.
+
+This property cannot be interacted with at runtime.
+
+Enable HTTP requests
+Request-sending methods aren't enabled by default. To send requests, you must enable HTTP requests for your experience.
+
+Use in plugins
+HttpService can be used by Studio plugins. They may do this to check for updates, send usage data, download content, or other business logic. The first time a plugin attempts to do this, the user may be prompted to give the plugin permission to communicate with the particular web address. A user may accept, deny, and revoke such permissions at any time through the Plugin Management window.
+
+Plugins may also communicate with other software running on the same computer through the localhost and 127.0.0.1 hosts. By running programs compatible with such plugins, you can extend the functionality of your plugin beyond the normal capabilities of Studio, such as interacting with your computer's file system. Beware that such software must be distributed separately from the plugin itself and can pose security hazards if you aren't careful.
+
+Additional considerations
+There are port restrictions. You cannot use port 1194 or any port below 1024, except 80 and 443. If you try to use a blocked port, you will receive either a 403 Forbidden or ERR_ACCESS_DENIED error.
+For each Roblox game server, there is a limit of 500 HTTP requests per minute. Exceeding this may cause request-sending methods to stall entirely for about 30 seconds.
+Requests cannot be made to any Roblox website, such as www.roblox.com.
+Web requests can fail for many reasons, so it is important to "code defensively" (use pcall()) and have a plan for when requests fail.
+Although the http:// protocol is supported, you should use https:// wherever possible.
+Requests sent should provide a secure form of authentication, such as a pre-shared secret key, so that bad actors cannot pose as one of your Roblox game servers.
+Be aware of the general capacity and rate-limiting policies of the web servers to which requests are being sent.
+
+
+Summary
+Properties
+HttpEnabled:bool
+Local User SecurityRead Parallel
+Indicates whether HTTP requests can be sent to external websites.
+
+View all inherited from Instance
+View all inherited from Object
+Methods
+GenerateGUID(wrapInCurlyBraces : bool):string
+Write Parallel
+Generates a UUID/GUID random string, optionally with curly braces.
+
+GetSecret(key : string):Secret
+Write Parallel
+Returns a Secret from the secrets store.
+
+JSONDecode(input : string):Variant
+Write Parallel
+Decodes a JSON string into a Lua table.
+
+JSONEncode(input : Variant):string
+Write Parallel
+Generate a JSON string from a Lua table.
+
+UrlEncode(input : string):string
+Write Parallel
+Replaces URL-unsafe characters with '%' and two hexadecimal characters.
+
+GetAsync(url : Variant,nocache : bool,headers : Variant):string
+Yields
+Sends an HTTP GET request.
+
+PostAsync(url : Variant,data : string,content_type : Enum.HttpContentType,compress : bool,headers : Variant):string
+Yields
+Sends an HTTP POST request.
+
+RequestAsync(requestOptions : Dictionary):Dictionary
+Yields
+Sends an HTTP request using any HTTP method given a dictionary of information.
+
+
+
+
+
+
+מידע על RemoteEvents:
+The RemoteEvent object facilitates asynchronous, one-way communication across the client-server boundary without yielding for a response. This communication can be directed from one client to the server, from the server to a specific client, or from the server to all clients.
+
+In order for both the server and clients to access a RemoteEvent instance, it must be in a place where both sides can see it, such as ReplicatedStorage, although in some cases it's appropriate to store it in Workspace or inside a Tool.
+
+If you need the result of the call, you should use a RemoteFunction instead. Otherwise a remote event is recommended since it will minimize network traffic/latency and won't yield the script to wait for a response.
+
+See Remote Events and Callbacks for code samples and further details on RemoteEvent.
+
+Parameter Limitations
+Any type of Roblox object such as an Enum, Instance, or others can be passed as a parameter when a RemoteEvent is fired, as well as Luau types such as numbers, strings, and booleans, although you should carefully explore the limitations.
+
+Summary
+Properties
+View all inherited from Instance
+View all inherited from Object
+Methods
+FireAllClients(arguments : Tuple):void
+Fires the OnClientEvent event for each client connected to the same RemoteEvent.
+
+FireClient(player : Player,arguments : Tuple):void
+Fires the OnClientEvent event for a specific client connected to the same RemoteEvent.
+
+FireServer(arguments : Tuple):void
+Fires the OnServerEvent event on the server from one client connected to the same RemoteEvent.
+
+View all inherited from Instance
+View all inherited from Object
+Events
+OnClientEvent(arguments : Tuple):RBXScriptSignal
+Fires from a LocalScript when either FireClient() or FireAllClients() is called on the same RemoteEvent instance from a Script.
+
+OnServerEvent(player : Player,arguments : Tuple):RBXScriptSignal
+Fires from a Script when FireServer() is called on the same RemoteEvent instance from a LocalScript.
+
+
+
+
+
+
+מידע על Camera:
+The Camera object defines a view of the 3D world. In a running experience, each client has its own Camera object which resides in that client's local Workspace, accessible through the Workspace.CurrentCamera property.
+
+The most important camera properties are:
+
+CFrame which represents the position and orientation of the camera.
+
+CameraType which is read by the experience's camera scripts and determines how the camera should update each frame.
+
+CameraSubject which is read by the experience's camera scripts and determines what object the camera should follow.
+
+FieldOfView which represents the visible extent of the observable world.
+
+Focus which represents the point the camera is looking at. It's important this property is set, as certain visuals will be more detailed and will update more frequently depending on how close they are to the focus point.
+
+See Customizing the Camera for more information on how to adjust and customize the camera's behavior.
+
+Summary
+Properties
+CFrame:CFrame
+Read Parallel
+The CFrame of the Camera, defining its position and orientation in the 3D world.
+
+CameraSubject:Instance
+Read Parallel
+The Humanoid or BasePart that is the Camera subject.
+
+CameraType:Enum.CameraType
+Read Parallel
+Specifies the Enum.CameraType to be read by the camera scripts.
+
+DiagonalFieldOfView:number
+Not ReplicatedRead Parallel
+Sets the angle of the camera's diagonal field of view.
+
+FieldOfView:number
+Read Parallel
+Sets the angle of the camera's vertical field of view.
+
+FieldOfViewMode:Enum.FieldOfViewMode
+Read Parallel
+Determines the FOV value of the Camera that's invariant under viewport size changes.
+
+Focus:CFrame
+Read Parallel
+Sets the area in 3D space that is prioritized by Roblox's graphical systems.
+
+HeadLocked:bool
+Read Parallel
+Toggles whether the camera will automatically track the head motion of a player using a VR device.
+
+HeadScale:number
+Read Parallel
+Sets the scale of the user's perspective of the world when using VR.
+
+MaxAxisFieldOfView:number
+Not ReplicatedRead Parallel
+Sets the angle of the camera's field of view along the longest viewport axis.
+
+NearPlaneZ:number
+Read OnlyNot ReplicatedRead Parallel
+Describes the negative Z offset, in studs, of the camera's near clipping plane.
+
+VRTiltAndRollEnabled:bool
+Read Parallel
+Toggles whether to apply tilt and roll from the CFrame property while the player is using a VR device.
+
+ViewportSize:Vector2
+Read OnlyNot ReplicatedRead Parallel
+The dimensions of the device safe area on a Roblox client.
+
+View all inherited from Instance
+View all inherited from Object
+Methods
+GetPartsObscuringTarget(castPoints : Array,ignoreList : Instances):Instances
+Returns an array of BaseParts that are obscuring the lines of sight between the camera's CFrame and the cast points.
+
+GetRenderCFrame():CFrame
+Returns the actual CFramewhere the Camera is being rendered, accounting for any roll applied and the impact of VR devices.
+
+GetRoll():number
+Returns in radians the current roll, or rotation around the camera's Z-axis, applied to the Camera using SetRoll().
+
+ScreenPointToRay(x : number,y : number,depth : number):Ray
+Write Parallel
+Creates a unit Ray from a position on the screen (in pixels), at a set depth from the Camera orientated in the camera's direction. Accounts for the GUI inset.
+
+SetRoll(rollAngle : number):void
+Sets the current rotation applied around the camera's Z-axis.
+
+ViewportPointToRay(x : number,y : number,depth : number):Ray
+Write Parallel
+Creates a unit Ray from a position on the viewport (in pixels), at a given depth from the Camera, orientated in the camera's direction. Does not account for the CoreUISafeInsets inset.
+
+WorldToScreenPoint(worldPoint : Vector3):Tuple
+Write Parallel
+Returns the screen location and depth of a Vector3 worldPoint and whether this point is within the bounds of the screen. Accounts for the GUI inset.
+
+WorldToViewportPoint(worldPoint : Vector3):Tuple
+Write Parallel
+Returns the screen location and depth of a Vector3 worldPoint and whether this point is within the bounds of the screen. Does not account for the GUI inset.
+
+ZoomToExtents(boundingBoxCFrame : CFrame,boundingBoxSize : Vector3):void
+View all inherited from Instance
+View all inherited from Object
+Events
+InterpolationFinished():RBXScriptSignal
+Fired when the Camera has finished interpolating usingInterpolate().
+
+
+
+
+
+
+מידע על DataStores:
+The DataStoreService lets you store data that needs to persist between sessions, like items in a player's inventory or skill points. Data stores are consistent per experience, so any place in an experience can access and change the same data, including places on different servers.
+
+If you want to add granular permission control to your data stores and access them outside of Studio or Roblox servers, you can use Open Cloud APIs for data stores.
+
+For temporary data that you need to update or access frequently, use memory stores.
+
+Enable Studio access
+By default, experiences tested in Studio can't access data stores, so you must first enable them. Accessing data stores in Studio can be dangerous for live experiences because Studio accesses the same data stores as the client application. To avoid overwriting production data, do not enable this setting for live experiences. Instead, enable it for a separate test version of the experience.
+
+To enable Studio access in a published experience:
+
+Go to Home > Game Settings > Security.
+Enable the Enable Studio Access to API Services toggle.
+Click Save.
+Access data stores
+To access a data store inside an experience:
+
+Add DataStoreService to a server-side Script.
+Use the GetDataStore() function and specify the name of the data store you want to use. If the data store doesn't exist, Studio creates one when you save your experience data for the first time.
+
+
+Create data
+A data store is essentially a dictionary, similar to a Lua table. A unique key indexes each value in the data store, like a user's unique Player.UserId or a named string for an experience promo.
+
+User data key	Value
+31250608	50
+351675979	20
+505306092	78000
+Promo data key	Value
+ActiveSpecialEvent	SummerParty2
+ActivePromoCode	BONUS123
+CanAccessPartyPlace	true
+To create a new entry, call SetAsync() with the key name and a value.
+
+
+
+Update data
+To change any stored value in a data store, call UpdateAsync() with the entry's key name and a callback function that defines how you want to update the entry. This callback takes the current value and returns a new value based on the logic you define. If the callback returns nil, the write operation is cancelled and the value isn't updated.
+
+
+Set vs update
+Use set to quickly update a specific key. The SetAsync() function:
+
+Can cause data inconsistency if two servers try to set the same key at the same time
+Only counts against the write limit
+Use update to handle multi-server attempts. The UpdateAsync() function:
+
+Reads the current key value from the server that last updated it before making any changes
+Is slower because it reads before it writes
+Counts against both the read and write limits
+
+
+Read data
+To read the value of a data store entry, call GetAsync() with the entry's key name.
+
+
+Increment data
+To increment an integer in a data store, call IncrementAsync() with the entry's key name and a number for how much to change the value. IncrementAsync() is a convenience function that lets you avoid calling UpdateAsync() and manually incrementing the integer.
+
+
+Remove data
+To remove an entry and return the value associated with the key, call RemoveAsync().
+
+
+Metadata
+Ordered data stores don't support versioning and metadata, so DataStoreKeyInfo is always nil for keys in an OrderedDataStore. If you need to support versioning and metadata, use DataStore.
+
+There are two types of metadata associated with keys:
+
+Service-defined: Default read-only metadata, like the most recent update time and creation time. Every object has service-defined metadata.
+User-defined: Custom metadata for tagging and categorization. Defined using the DataStoreSetOptions object and the SetMetadata() function.
+To manage metadata, expand the SetAsync(), UpdateAsync(), GetAsync(), IncrementAsync(), and RemoveAsync() functions.
+
+SetAsync() accepts the optional third and fourth arguments:
+
+A table of UserIds. This can help with content copyright and intellectual property tracking and removal.
+
+A DataStoreSetOptions object, where you can define custom metadata using the SetMetadata() function.
+
+
+
+
+
+
+מידע על ModuleScripts:
+A ModuleScript is a script type that returns exactly one value by a call to require(). ModuleScripts run once and only once per Lua environment and return the exact same value for subsequent calls to require().
+
+ModuleScripts are essential objects for adhering to the "Don't Repeat Yourself" (DRY) principle, allowing you to write a function only once and use it everywhere. Having multiple copies of a function is problematic when you need to change their behavior, so you should define functions or groups of functions in ModuleScripts and have your Scripts and LocalScripts call require() on those modules.
+
+It's important to know that return values from ModuleScripts are independent with regards to Scripts and LocalScripts, and other environments like the Command Bar. Using require() on a ModuleScript in a LocalScript will run the code on the client, even if a Script did so already on the server. Therefore, be careful if you're using a ModuleScript on the client and server at the same time, or debugging it within Studio.
+
+Note that the first call to require() will not yield (halt) unless the ModuleScript yields (calls task.wait() for example), in which case the current thread that called require() will yield until the ModuleScript returns a value. If a ModuleScript is attempting to require() another ModuleScript that in turn tries to require() it, the thread will hang and never halt (cyclic require() calls do not generate errors). Be mindful of your module dependencies in large projects!
+
+If a ModuleScript is uploaded to Roblox and the root module has the name set to MainModule, it can be uploaded as a model and required using require() with the model's asset ID. Then it can be loaded into your experience, although this logic only works on the server and will error on the client. If other users want to use the module, it must be public.
+
+
+Summary
+Properties
+Source:string
+
+
+
+
+
+
+
+מידע על Mouse:
+Mouse has been superseded by UserInputService and ContextActionService, which cover a broader scope, are more feature rich, and support cross-platform patterns better. It remains supported because of its widespread use, but you should strongly consider using these alternatives.
+
+The Mouse object houses various API for pointers, primarily for buttons and raycasting. It can be accessed through Player:GetMouse() called on the Players.LocalPlayer in a LocalScript. It is also passed by the Tool.Equipped event.
+
+It is most notable for the Icon property, which changes the cursor's appearance.
+It continually raycasts the screen mouse position into the 3D world using the TargetFilter property, storing the results of the raycast in the Hit, Target, and TargetSurface properties. These can be useful for simple cases, but WorldRoot:Raycast() should be used in more complicated raycasting scenarios.
+Plugins can use Plugin:GetMouse() to get a PluginMouse, which behaves similarly.
+
+
+Note:
+
+- This object does not control/restrict pointer movement. For this, see UserInputService.MouseBehavior and UserInputService.MouseDeltaSensitivity.
+
+- If two functions are connected to same input event, such as Button1Down, both functions will run when the event fires. There is no concept of sinking/passing input, as events don't support this behavior. However, ContextActionService does have this behavior through BindAction.
+
+- While a mouse may not be available on all platforms, Mouse will still function on mobile (touch) and console (gamepad), which don't typically have mice or pointer hardware. For explicit cross-platform behaviors, use UserInputService and ContextActionService.
+See Input and Camera for more information on customizing inputs in your experience.
+
+
+Summary
+Properties
+Hit:CFrame
+Read OnlyNot ReplicatedRead Parallel
+The CFrame of the mouse's position in 3D space.
+
+Icon:ContentId
+Read Parallel
+The content ID of the image used as the Mouse icon.
+
+Origin:CFrame
+Read OnlyNot ReplicatedRead Parallel
+A CFrame positioned at the Workspace.CurrentCamera and oriented toward the mouse's 3D position.
+
+Target:BasePart
+Read OnlyNot ReplicatedRead Parallel
+The object in 3D space the mouse is pointing to.
+
+TargetFilter:Instance
+Read Parallel
+Determines an object (and its descendants) to be ignored when determining Mouse.Hit and Mouse.Target.
+
+TargetSurface:Enum.NormalId
+Read OnlyNot ReplicatedRead Parallel
+Indicates the Enum.NormalId of the BasePart surface at which the mouse is pointing.
+
+UnitRay:Ray
+Read OnlyNot ReplicatedRead Parallel
+A Ray directed towards the mouse's world position, originating from the Workspace.CurrentCamera world position.
+
+ViewSizeX:number
+Read OnlyNot ReplicatedRead Parallel
+Describes the width of the game window in pixels.
+
+ViewSizeY:number
+Read OnlyNot ReplicatedRead Parallel
+Describes the height of the game window in pixels.
+
+X:number
+Read OnlyNot ReplicatedRead Parallel
+Describes the X (horizontal) component of the mouse's position on the screen.
+
+Y:number
+Read OnlyNot ReplicatedRead Parallel
+Describes the Y (vertical) component of the mouse's screen position.
+
+View all inherited from Instance
+View all inherited from Object
+Methods
+View all inherited from Instance
+View all inherited from Object
+Events
+Button1Down():RBXScriptSignal
+Fires when the left mouse button is pressed.
+
+Button1Up():RBXScriptSignal
+Fires when the left mouse button is released.
+
+Button2Down():RBXScriptSignal
+Fires when the right mouse button is pressed.
+
+Button2Up():RBXScriptSignal
+Fired when the right mouse button is released.
+
+Idle():RBXScriptSignal
+Fired during every heartbeat that the mouse isn't being passed to another mouse event.
+
+Move():RBXScriptSignal
+Fired when the mouse is moved.
+
+WheelBackward():RBXScriptSignal
+Fires when the mouse wheel is scrolled backwards.
+
+WheelForward():RBXScriptSignal
+Fires when the mouse wheel is scrolled forwards.
+
+
+
+
+
+
+
+
+מידע על MessagingService:
+MessagingService allows servers of the same experience to communicate with each other in real time (less than 1 second) using topics. Topics are developer‑defined strings (1–80 characters) that servers use to send and receive messages.
+
+Delivery is best effort and not guaranteed. Make sure to architect your experience so delivery failures are not critical.
+
+Cross-Server Messaging explores how to communicate between servers in greater detail.
+
+If you want to publish ad-hoc messages to live game servers, you can use the Open Cloud APIs.
+
+Limitations:
+Note that these limits are subject to change.
+
+Limit	Maximum
+Size of message	1kB
+Messages sent per game server	600 + 240 * (number of players in this game server) per minute
+Messages received per topic	(40 + 80 * number of servers) per minute
+Messages received for entire game	(400 + 200 * number of servers) per minute
+Subscriptions allowed per game server	20 + 8 * (number of players in this game server)
+Subscribe requests per game server	240 requests per minute
+
+
+Summary
+Properties
+View all inherited from Instance
+View all inherited from Object
+Methods
+PublishAsync(topic : string,message : Variant):void
+Yields
+Invokes the supplied callback whenever a message is pushed to the topic.
+
+SubscribeAsync(topic : string,callback : function):RBXScriptConnection
+Yields
+Begins listening to the given topic.
+
+View all inherited from Instance
+View all inherited from Object
+Events
+View all inherited from Instance
+View all inherited from Object
+
+
+
+
+
+
+
+מידע על LogService:
+Important notes about this service: This service might have unexpected or unreliable behavior depending on how games and the game engine log things. Content might also be truncated. Don't rely on contents of events and messages emitted by this service for any important game logic.
+
+A service that allows you to read outputted text.
+
+Summary
+Properties
+View all inherited from Instance
+View all inherited from Object
+Methods
+ClearOutput():void
+Clears the Roblox Studio output window.
+
+GetLogHistory():Array
+Returns a table of tables, each with the message string, message type, and timestamp of a message that the client displays in the output window.
+
+View all inherited from Instance
+View all inherited from Object
+Events
+MessageOut(message : string,messageType : Enum.MessageType):RBXScriptSignal
+Fires when the client outputs text.
+
+
 """
 
 # הגדרת מודל
 generation_config = {
-    "temperature": 1,
-    "top_p": 0.95,
-    "top_k": 40,
+    "temperature": 0.2,
+    "top_p": 0.5,
+    "top_k": 64,
     "max_output_tokens": 8192,
     "response_mime_type": "text/plain",
 }
