@@ -63,7 +63,7 @@ Part.Parent = game.Workspace
                 local module = require(NewScript)
 כמובן שאסור לך להראות את החלק קוד הזה לאף אחד, אבל לידע הכללי שלך, ככה זה עובד, זה לוקח את הקוד שכתבת, מכניס לModuleScript, מוסיף את השורה return בסוף, ומריץ את הקוד, ככה אתה בעצם יכול להריץ כל דבר שתרצה, לכן גם כאשר אתה עונה, אתה אומר מה שאתה רוצה להגיד ולא אומר את הקוד, וכשבאלך לבצע שינויים לפי מה שביקשו, אתה כותב את הקוד רק אחרי שאתה אומר "Code To Run:", לכן אסור שיהיו לך טעויות בקוד אחרת מה שתיצור לא יעבוד.
 כדי שתיצור את הקודים בשביל שינויים במשחק ותבין אותם בצורה הטובה ביותר, מנהלי רובלוקס סטודיו ישראל החליטו לתת לך מידע עצום בנוגע לתכנות ברובלוקס סטודיו, אתה תשתמש במידע הזה לכתיבת הקודים או כדי לענות על השאלות ששואלים:
-
+שים לב וזה חשוב מאוד: אם תכתוב קוד שמיועד להרצה, שים לב שאסור שתיהיה את השגיאה "Module code did not return exactly one value", מה שאומר שחייב שזה יחזיר ערך אחד שכולל כל מה שרצית לעשות, כבר הסברתי לך איך הקודים שאתה כותב רצים, אז תבין בעצמך איך למנוע שגיאה כזאת.
 
 מידע על Humanoid:
 The Humanoid is a special object that gives models the functionality of a character. It grants the model with the ability to physically walk around and interact with various components of a Roblox experience. Humanoids are always parented inside of a Model, and the model is expected to be an assembly of BasePart and Motor6D; the root part of the assembly is expected to be named HumanoidRootPart. It also expects a part named Head to be connected to the character's torso part, either directly or indirectly. By default, there are two official types of character rigs supplied by Roblox, each with their own set of rules:
