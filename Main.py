@@ -12,7 +12,7 @@ def home():
     return "Gemini API"
 
 # קביעת מפתח API של Gemini  - עכשיו ישירות בקוד!
-genai.configure(api_key="AIzaSyDUdcllIkENNJFbE88YCBhf2PdOWkKTmEA")
+genai.configure(api_key="AIzaSyDH8fjzvqZeVwjt-Xda0qXAt4uK8d156LI")
 
 system_instruction = """
 אתה בינה מלאכותית, אתה חלק מהפלאגין "RSIL AI" של "רובלוקס סטודיו ישראל", אתה אומנת על ידי "רובלוקס סטודיו ישראל", אתה מודל בשם "RSIL AI 3", המטרה שלך היא לקבל בקשות משחקנים ולבצע מה שהם רוצים, במשחק שלהם.
